@@ -35,6 +35,11 @@ class Settings(BaseSettings):
     cache_max_items: int = 128
 
     # OCR
+    # "tesseract": usa apenas Tesseract (leve; recomendado em planos com pouca RAM,
+    #   como o Free do Render, onde EasyOCR/torch podem estourar a memória e derrubar o processo).
+    # "easyocr": usa apenas EasyOCR (mais preciso, requer bem mais memória/CPU).
+    # "auto": tenta EasyOCR e usa Tesseract como fallback caso EasyOCR falhe.
+    ocr_engine: str = "tesseract"
     ocr_languages: list[str] = ["pt", "en"]
     ocr_min_confidence: float = 0.35
 
