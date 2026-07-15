@@ -39,12 +39,19 @@ class TextoDetectado:
 
 def _get_easyocr():
     global _easyocr_reader, _easyocr_falhou
+    settings = get_settings()
+
+    if settings.ocr_engine == "tesseract":
+        # Não importa o EasyOCR/torch: em planos com pouca RAM (ex.: Free do
+        # Render, 512 MB) o carregamento do modelo estoura a memória e
+        # derruba o processo. Usar só o Tesseract evita esse crash.
+        return None
+
     if _easyocr_reader is not None or _easyocr_falhou:
         return _easyocr_reader
     try:
         import easyocr
 
-        settings = get_settings()
         _easyocr_reader = easyocr.Reader(settings.ocr_languages, gpu=False)
         logger.info("EasyOCR inicializado com idiomas %s", settings.ocr_languages)
     except Exception as exc:  # pragma: no cover - depende do ambiente
